@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 ROLES = (
     ('user', 'Пользователь'),
@@ -12,7 +12,7 @@ class User(AbstractUser):
     email = models.EmailField('Почта', unique=True)
     bio = models.TextField('Описание', help_text='Введите описание профиля',
                            null=True, blank=True)
-    role = models.CharField('Роль',max_length=20, choices=ROLES,
+    role = models.CharField('Роль', max_length=20, choices=ROLES,
                             default='user')
     confirmation_code = models.CharField('Код подтверждения', max_length=12,
                                          null=True)

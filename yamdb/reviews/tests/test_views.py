@@ -1,8 +1,7 @@
-from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 
 User = get_user_model()
 
@@ -18,10 +17,10 @@ class ReviewViewsTest(TestCase):
         cls.title = Title.objects.create(name='title', year=1900,
                                          category=cls.category)
         cls.title.genre.add(cls.genre)
-        cls.review = Review.objects.create(author=cls.author, title=cls.title, text='text',
-                                       score=10)
-        cls.comment = Comment.objects.create(review=cls.review, author=cls.author,
-                                         text='text')
+        cls.review = Review.objects.create(author=cls.author, title=cls.title,
+                                           text='text', score=10)
+        cls.comment = Comment.objects.create(review=cls.review,
+                                             author=cls.author, text='text')
 
     def setUp(self):
         self.user = User.objects.create(username='user')
@@ -106,7 +105,6 @@ class ReviewViewsTest(TestCase):
             response.context['page_obj'],
             Comment.objects.filter(review=self.review)
         )
-
 
     def test_category_list_page_show_correct_template(self):
         """Шаблон category_list сформирован с правильным контекстом"""

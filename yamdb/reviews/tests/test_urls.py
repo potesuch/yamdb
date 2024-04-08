@@ -1,7 +1,6 @@
-from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
-
-from reviews.models import Category, Genre, Title, Review, Comment
+from django.test import Client, TestCase
+from reviews.models import Category, Comment, Genre, Review, Title
 
 User = get_user_model()
 
@@ -14,12 +13,13 @@ class ReviewURLTest(TestCase):
         cls.author = User.objects.create(username='author')
         category = Category.objects.create(name='category', slug='slug')
         genre = Genre.objects.create(name='genre', slug='slug')
-        title = Title.objects.create(name='title', year=1999, category=category)
+        title = Title.objects.create(name='title', year=1999,
+                                     category=category)
         title.genre.add(genre)
-        review = Review.objects.create(author=cls.author,title=title, text='text',
-                                       score=10)
-        comment = Comment.objects.create(review=review, author=cls.author,
-                                         text='text')
+        review = Review.objects.create(author=cls.author, title=title,
+                                       text='text', score=10)
+        Comment.objects.create(review=review, author=cls.author, text='text')
+
     def setUp(self):
         self.user = User.objects.create(username='user')
         self.guest_client = Client()
@@ -36,7 +36,7 @@ class ReviewURLTest(TestCase):
             '/profile/author/': 'reviews/profile.html',
             '/search/': 'reviews/search.html',
         }
-        self.urls= (
+        self.urls = (
             '/titles/1/review/create/',
             '/titles/1/review/1/update/',
             '/titles/1/review/1/delete/',

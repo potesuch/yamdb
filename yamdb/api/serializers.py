@@ -1,8 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
-
-from reviews.models import Category, Genre, Title, Review, Comment
+from rest_framework import serializers
+from reviews.models import Category, Comment, Genre, Review, Title
 
 User = get_user_model()
 
@@ -93,8 +92,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         author = self.context.get('request').user
         method = self.context.get('request').method
         if queryset.filter(title=title, author=author) and method == 'POST':
-            raise serializers.ValidationError('Можно сделать только один обзор '
-                                              'на один и тот же фильм.')
+            raise serializers.ValidationError('Можно сделать только один '
+                                              'обзор на один и тот же фильм.')
         return attrs
 
 
@@ -117,5 +116,5 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserMeSerializer(UserSerializer):
 
-     class Meta(UserSerializer.Meta):
-         read_only_fields = ('role',)
+    class Meta(UserSerializer.Meta):
+        read_only_fields = ('role',)

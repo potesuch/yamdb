@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Genre, Title, GenreTitle, Review, Comment
+
+from .models import Category, Comment, Genre, GenreTitle, Review, Title
 
 
 class GenresInline(admin.TabularInline):
@@ -35,8 +36,7 @@ class TitleAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
     def get_queryset(self, request):
-        queryset = super().get_queryset(request).prefetch_related('genre')
-        return queryset
+        return super().get_queryset(request).prefetch_related('genre')
 
     @admin.display(description='genres')
     def get_genres(self, obj):
@@ -64,8 +64,7 @@ class CommentAdmin(admin.ModelAdmin):
     ordering = ('review__title',)
 
     def get_queryset(self, request):
-        queryset = super().get_queryset(request).select_related('review')
-        return queryset
+        return super().get_queryset(request).select_related('review')
 
     @admin.display(description='text')
     def get_text(self, obj):

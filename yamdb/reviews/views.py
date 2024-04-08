@@ -1,16 +1,15 @@
-from django.shortcuts import render
-from django.views import View
-from django.views.generic.base import ContextMixin, TemplateResponseMixin
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView, FormMixin, DeletionMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.views import View
+from django.views.generic.base import ContextMixin, TemplateResponseMixin
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import DeletionMixin, FormMixin, UpdateView
+from django.views.generic.list import ListView
 
-from .models import Title, Category, Genre, Review, User, Comment
-from .forms import ReviewForm, CommentForm
+from .forms import CommentForm, ReviewForm
+from .models import Category, Comment, Genre, Review, Title, User
 
 
 class RelatedObjectView(TemplateResponseMixin, ContextMixin, View):
@@ -27,12 +26,11 @@ class RelatedObjectView(TemplateResponseMixin, ContextMixin, View):
     paginate_orphans = 0
 
     def get_relations(self, related, selected_fields, prefetched_fields):
-        queryset = related.all()
         if selected_fields:
-            queryset = queryset.select_related(*selected_fields)
+            queryset = related.select_related(*selected_fields)
         if prefetched_fields:
-            queryset = queryset.prefetch_related(*prefetched_fields)
-        return queryset
+            queryset = related.prefetch_related(*prefetched_fields)
+        return queryset.all()
 
     def paginate_queryset(self, queryset, page_size):
         paginator = Paginator(queryset,
@@ -47,7 +45,6 @@ class RelatedObjectView(TemplateResponseMixin, ContextMixin, View):
             page_number = int(page_number)
         page = paginator.page(page_number)
         return paginator, page, page.object_list, page.has_other_pages
-
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -91,9 +88,8 @@ class CreateView(LoginRequiredMixin, View):
 
     def get_success_url(self):
         pk = self.kwargs.get(self.related_model_pk_url_kwarg)
-        url = reverse(self.view_name,
-                      kwargs={self.related_model_pk_url_kwarg: pk})
-        return url
+        return reverse(self.view_name,
+                       kwargs={self.related_model_pk_url_kwarg: pk})
 
     def form_valid(self, form):
         pk = self.kwargs.get(self.related_model_pk_url_kwarg)
@@ -119,9 +115,8 @@ class DeleteView(LoginRequiredMixin, SingleObjectMixin, DeletionMixin, View):
 
     def get_success_url(self):
         pk = self.kwargs.get(self.related_model_pk_url_kwarg)
-        url = reverse(self.view_name,
-                      kwargs={self.related_model_pk_url_kwarg: pk})
-        return url
+        return reverse(self.view_name,
+                       kwargs={self.related_model_pk_url_kwarg: pk})
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -139,9 +134,8 @@ class IndexListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = (Title.objects.all().select_related('category').
-                    prefetch_related('genre'))
-        return queryset
+        return (Title.objects.all().select_related('category').
+                prefetch_related('genre'))
 
 
 class TitleDetailView(FormMixin, RelatedObjectView):
@@ -233,9 +227,10 @@ class ReviewUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         review = self.object
-        url = reverse('reviews:title_detail',
-                      kwargs={self.related_model_pk_url_kwarg: review.title.id})
-        return url
+        return reverse('reviews:title_detail',
+                       kwargs={
+                           self.related_model_pk_url_kwarg: review.title.id
+                       })
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

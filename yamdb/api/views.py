@@ -1,36 +1,34 @@
-from rest_framework import views
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import filters
-from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
-from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.db.models import Avg
+from django.utils.crypto import get_random_string
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import (extend_schema_view, extend_schema,
-                                   OpenApiParameter)
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+from rest_framework import filters, status, views, viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from reviews.models import Category, Comment, Genre, Review, Title
 
-from reviews.models import Category, Genre, Title, Review, Comment
-from .serializers import (SignUpSerializer, TokenObtainSerializer,
-                          CategorySerializer, GenreSerializer, TitleSerializer,
-                          TitleCreateUpdateSerializer, ReviewSerializer,
-                          CommentSerializer, UserSerializer, UserMeSerializer)
-from .permissions import (IsAdminOrReadOnly, IsAuthorOrAdminOrModeratorOrReadOnly,
-                          IsAdmin)
-from .mixins import ListCreateDestroyMixin
 from .filters import TitleFilter
+from .mixins import ListCreateDestroyMixin
+from .permissions import (IsAdmin, IsAdminOrReadOnly,
+                          IsAuthorOrAdminOrModeratorOrReadOnly)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, SignUpSerializer,
+                          TitleCreateUpdateSerializer, TitleSerializer,
+                          TokenObtainSerializer, UserMeSerializer,
+                          UserSerializer)
 
 User = get_user_model()
 
 
 @extend_schema(tags=['AUTH'])
 class SignUpView(views.APIView):
-    serializer_class = SignUpSerializer # Для drf_spectacular
+    serializer_class = SignUpSerializer  # Для drf_spectacular
     permission_classes = (AllowAny,)
 
     def send_code(self, user):
@@ -68,7 +66,7 @@ class SignUpView(views.APIView):
 
 @extend_schema(tags=['AUTH'])
 class TokenObtainRefreshView(views.APIView):
-    serializer_class = TokenObtainSerializer # Для drf_spectacular
+    serializer_class = TokenObtainSerializer  # Для drf_spectacular
     permission_classes = (AllowAny,)
 
     @extend_schema(summary='Получение JWT-токена',
@@ -149,7 +147,8 @@ class GenreViewSet(ListCreateDestroyMixin, viewsets.GenericViewSet):
                            description='Информация о произведении'),
     partial_update=extend_schema(summary='Частичное обновление информации о '
                                          'произведении',
-                         description='Обновить информацию о произведении'),
+                                 description='Обновить информацию о '
+                                             'произведении'),
     destroy=extend_schema(summary='Удаление произведения',
                           description='Удалить произведение.'),
     update=extend_schema(exclude=True)
@@ -172,14 +171,14 @@ class TitleViewSet(viewsets.ModelViewSet):
     list=extend_schema(summary='Получение списка всех отзывов',
                        description='Получить список всех отзывов.'),
     create=extend_schema(summary='Добавление нового отзыва',
-                         description='Добавить новый отзыв. Пользователь может '
-                                     'оставить только один отзыв на '
+                         description='Добавить новый отзыв. Пользователь '
+                                     'может оставить только один отзыв на '
                                      'произведение.'),
     retrieve=extend_schema(summary='Полуение отзыва по id',
                            description='Получить отзыв по id для указанного '
                                        'произведения.'),
     partial_update=extend_schema(summary='Частичное обновление отзыва по id',
-                         description='Частично обновить отзыв по id.'),
+                                 description='Частично обновить отзыв по id.'),
     destroy=extend_schema(summary='Удаление отзыва по id',
                           description='Удалить отзыв по id'),
     update=extend_schema(exclude=True)
@@ -192,8 +191,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        queryset = Review.objects.filter(title=title)
-        return queryset
+        return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -204,8 +202,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 @extend_schema(tags=['COMMENTS'])
 @extend_schema_view(
     list=extend_schema(summary='Получение списка всех комментариев к отзыву',
-                       description='Получить список всех комментариев к отзыву '
-                                   'по id'),
+                       description='Получить список всех комментариев к '
+                                   'отзыву по id'),
     create=extend_schema(summary='Добавление комментария к отзыву',
                          description='Добавить новый комментарий для отзыва.'),
     retrieve=extend_schema(summary='Получение комментария к отзыву',
@@ -213,8 +211,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
                                        'id.'),
     partial_update=extend_schema(summary='Частичное обновление комментария к '
                                          'отзыву',
-                         description='Частично обновить комментарий к отзыву '
-                                     'по id.'),
+                                 description='Частично обновить комментарий к '
+                                             'отзыву по id.'),
     destroy=extend_schema(summary='Удаление комментария к отзыву',
                           description='Удалить комментарий к отзыву по id.'),
     update=extend_schema(exclude=True)
@@ -227,8 +225,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, pk=review_id)
-        queryset = Comment.objects.filter(review=review)
-        return queryset
+        return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
@@ -242,11 +239,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary='Добавление пользователя',
                          description='Добавить нового пользователя.'),
     retrieve=extend_schema(summary='Получение пользователя по username',
-                          description='Получить пользователя по username.'),
+                           description='Получить пользователя по username.'),
     partial_update=extend_schema(summary='Изменение данных пользователя по '
                                          'username',
                                  description='Изменить данные пользователя '
-                                              'по username.'),
+                                             'по username.'),
     destroy=extend_schema(summary='Удаление пользователя по username',
                           description='Удалить пользователя по username.'),
     update=extend_schema(exclude=True),
@@ -261,7 +258,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ('username',)
 
     @extend_schema(summary='Получение данных своей учетной записи',
-                  description='Получить данные своей учетной записи')
+                   description='Получить данные своей учетной записи')
     @action(detail=False, url_path='me',
             permission_classes=(IsAuthenticated,),
             serializer_class=UserMeSerializer)

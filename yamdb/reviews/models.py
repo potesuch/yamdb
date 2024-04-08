@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
 from .validators import validate_year
 
@@ -85,9 +85,11 @@ class Review(PubDateModel):
     title = models.ForeignKey(Title, on_delete=models.CASCADE,
                               related_name='reviews')
     text = models.TextField('Отзыв', help_text='Введите текст отзыва')
-    score = models.PositiveSmallIntegerField('Оценка',
-                                             help_text='Выберите оценку',
-                                             choices=((i, i) for i in range(11)))
+    score = models.PositiveSmallIntegerField(
+        'Оценка',
+        help_text='Выберите оценку',
+        choices=((i, i) for i in range(11))
+    )
 
     class Meta:
         verbose_name = 'Отзыв'
@@ -95,8 +97,8 @@ class Review(PubDateModel):
         ordering = ('-pub_date',)
         constraints = (
             models.UniqueConstraint(
-                fields = ('author', 'title'),
-                name = 'unique_review_author'
+                fields=('author', 'title'),
+                name='unique_review_author'
             ),
         )
 

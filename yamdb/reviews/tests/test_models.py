@@ -1,7 +1,6 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
-
-from reviews.models import Category, Genre, Title, GenreTitle, Review, Comment
+from django.test import TestCase
+from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 
 User = get_user_model()
 
@@ -15,7 +14,7 @@ class ReviewModelTest(TestCase):
         cls.category = Category.objects.create(name='category',
                                                slug='slug')
         cls.genre = Genre.objects.create(name='genre', slug='slug')
-        cls.title = Title.objects.create(name='title',year='1999',
+        cls.title = Title.objects.create(name='title', year='1999',
                                          category=cls.category)
         cls.title.genre.add(cls.genre)
         cls.review = Review.objects.create(author=author,
