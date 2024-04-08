@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ review.name }}{% endblock %}
+{% block content %}
+  <h1><a href="{{ review.title.get_absolute_url }}">{{ review.title }}</a></h1>
+  <div class="row pb-5">
+    {% include 'reviews/includes/review.html' %}
+  </div>
+  {% if user.is_authenticated %}
+    <div class="card">
+      <h5 class="card-header">Добавить комментарий:</h5>
+      <div class="card-body">
+        {% include 'includes/form.html' %}
+      </div>
+    </div>
+  {% endif %}
+  {% for comment in comments %}
+    {% include 'reviews/includes/comment.html' %}
+  {% empty %}
+    No comments yet.
+  {% endfor %}
+{% endblock %}

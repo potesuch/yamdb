@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-body">
+    <a href="{{ title.get_absolute_url }}" class="card-title">{{ title.name }}</a>
+    <p class="card-text">{{ title.year }}</p>
+    <p class="card-text">Категория: <a href="{{ title.category.get_absolute_url }}">{{ title.category.name }}</a></p>
+    <p class="card-text">Жанры:
+      {% for genre in title.genre.all %}
+        <a href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+        {% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+  </div>
+</div>

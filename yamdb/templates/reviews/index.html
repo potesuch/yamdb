@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Произведения{% endblock %}
+{% block content %}
+  <h1>Произведения</h1>
+  <div class="row">
+    {% for title in titles %}
+        {% include 'reviews/includes/title.html' %}
+    {% empty %}
+      <p>No titles yet.</p>
+    {% endfor %}
+  </div>
+  {% include 'reviews/includes/paginator.html' %}
+{% endblock %}

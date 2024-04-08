@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ author.username }}{% endblock %}
+{% block content %}
+  <h1>Профиль пользователя</h1>
+  <div class="card">
+    <h5 class="card-header">
+      {{ author.username }}
+    </h5>
+    <div class="card-body">
+      <p class="card-text">Описание: {{ author.bio }}</p>
+      <p class="card-text">Роль: {{ author.role }}</p>
+      <p class="card-text">Количество обзоров: {{ author.reviews.count }}</p>
+    </div>
+  </div>
+  {% for review in reviews %}
+    {% include 'reviews/includes/review.html' %}
+  {% empty %}
+    No reviews yet.
+  {% endfor %}
+{% endblock %}

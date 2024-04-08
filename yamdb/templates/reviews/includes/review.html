@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <a href="{% url 'reviews:profile' username=review.author.username %}">
+        {{ review.author.username }}
+      </a>
+    </h5>
+    <small class="text-muted">{{ review.score }} из 10</small>
+    <p class="card-text">{{ review.text }}</p>
+    {% if user == review.author or user.is_staff or user.is_admin or user.is_moderator %}
+      <a href="{% url 'reviews:review_update' review.title.id review.id %}">
+        <small class="text-muted">редактировать</small>
+      </a>
+    {% endif %}
+    {% with object=review redirect_id=title.id %}
+      {% include 'reviews/includes/delete_form.html' %}
+    {% endwith %}
+    <small class="text-muted">
+      {% if review.comments.count > 0 %}
+        <a href="{{ review.get_absolute_url }}">
+          Комментариев: {{ review.comments.count }}
+        </a>
+      {% else %}
+        <a href="{{ review.get_absolute_url }}">
+          Комментариев нет
+        </a>
+      {% endif %}
+    </small>
+  </div>
+</div>
+

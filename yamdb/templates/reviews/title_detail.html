@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ title.name }}{% endblock %}
+{% block content %}
+  <h1>Подробная информация</h1>
+  <div class="row pb-5">
+    {% include 'reviews/includes/title.html ' %}
+  </div>
+  {% if user.is_authenticated %}
+    <div class="card">
+      <h5 class="card-header">Написать обзор:</h5>
+      <div class="card-body">
+        {% include 'includes/form.html' %}
+      </div>
+    </div>
+  {% endif %}
+  {% for review in reviews %}
+    {% include 'reviews/includes/review.html' %}
+  {% empty %}
+    No reviews yet.
+  {% endfor %}
+  {% include 'reviews/includes/paginator.html' %}
+{% endblock %}

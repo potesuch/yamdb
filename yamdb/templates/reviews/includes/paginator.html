@@ -1,0 +1,72 @@
+{% if is_paginated %}
+  <nav aria-label="Page navigation" class="my-5">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a
+              class="page-link"
+              {% if request.GET.q %}
+                href="?page=1&q={{ request.GET.q }}"
+              {% else %}
+                href="?page=1"
+              {% endif %}
+          >
+            Первая
+          </a>
+        </li>
+        <li class="page-item">
+          <a
+              class="page-link"
+              {% if request.GET.q %}
+                href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}"
+              {% else %}
+                href="?page={{ page_obj.previous_page_number }}"
+              {% endif %}
+          >
+            Предыдущая
+          </a>
+        </li>
+      {% endif %}
+      {% with p_range=page_obj.paginator.page_range %}
+        {% for p in p_range %}
+          <li class="page-item {% if p == page_obj.number %} disabled {% endif %}">
+            <a
+                class="page-link"
+                {% if request.GET.q %}
+                  href="?page={{ p }}&q={{ request.GET.q }}"
+                {% else %}
+                  href="?page={{ p }}"
+                {% endif %}
+            >{{ p }}</a>
+          </li>
+        {% endfor %}
+      {% endwith %}
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a
+              class="page-link"
+              {% if request.GET.q %}
+                href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}"
+              {% else %}
+                href="?page={{ page_obj.next_page_number }}"
+              {% endif %}
+          >
+            Следующая
+          </a>
+        </li>
+        <li class="page-item">
+          <a
+              class="page-link"
+              {% if request.GET.q %}
+                href="?page=last&q={{ request.GET.q }}"
+              {% else %}
+                href="?page=last"
+              {% endif %}
+          >
+            Последняя
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

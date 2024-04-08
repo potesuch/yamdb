@@ -1,0 +1,9 @@
+{% if user == object.author or user.is_staff or user.is_admin or user.is_moderator %}
+    <form action="{{ object.get_delete_url }}" method="post">
+    {% csrf_token %}
+      <input type="hidden" name="pk" value="{{ redirect_id }}">
+      <button class="btn btn-link" class="" type="submit">
+        <small class="text-muted">удалить</small>
+      </button>
+    </form>
+{% endif %}

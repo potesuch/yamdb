@@ -1,0 +1,13 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <a href="{% url 'reviews:profile' username=comment.author.username %}">
+        {{ comment.author }}
+      </a>
+    </h5>
+    <p>{{ comment.text }}</p>
+    {% with object=comment redirect_id=review.id %}
+      {% include 'reviews/includes/delete_form.html' %}
+    {% endwith %}
+  </div>
+</div>
