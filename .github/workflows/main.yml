@@ -52,9 +52,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            rm -rf yamdb/
-            git clone git@github.com:potesuch/yamdb.git
-            cd yamdb/infra/
+            cd yamdb/
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
