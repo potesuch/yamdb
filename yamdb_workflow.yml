@@ -38,9 +38,9 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
+          context: ./yamdb
           push: true
           tags: potesuch/yamdb
-          file: yamdb/Dockerfile
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
@@ -51,18 +51,24 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          env:
-            DB_ENGINE: django.db.backends.postgresql
-            DB_NAME: postgres
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            DB_HOST: db
-            DB_PORT: 5432
           script: |
+            rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
+            touch .env
+            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             sudo docker compose down
+            sudo docker compose pull web
             sudo docker compose up -d
+            sudo docker compose exec web python manage.py migrate
+            sudo docker compose exec web python manage.py collectstatic --noinput
+            sudo docker compose exec web python manage.py load_data User Category Genre Title GenreTitle Review Comment
+
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
