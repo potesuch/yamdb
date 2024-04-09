@@ -1,13 +1,13 @@
 version: '3.8'
 
 services:
-  db:
+  db_yamdb:
     image: postgres:13.0-alpine
     volumes:
       - /var/lib/postgresql/data/
     env_file:
       - ./.env
-  web:
+  web_yamdb:
     image: potesuch/yamdb
     restart: always
     volumes:
@@ -16,7 +16,7 @@ services:
     ports:
      - "8002:8000"
     depends_on:
-      - db
+      - db_yamdb
     env_file:
       - ./.env
   nginx_yamdb:
@@ -28,7 +28,7 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - web
+      - web_yamdb
 
 volumes:
   static_value:
