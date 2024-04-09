@@ -62,13 +62,13 @@ jobs:
           envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT, HUETAAAAAAA
           script: |
             env
-            export DB_ENGINE=${DB_ENGINE}
-            export DB_NAME=${DB_NAME}
-            export POSTGRES_USER=${POSTGRES_USER}
-            export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-            export DB_HOST=${DB_HOST}
-            export DB_PORT=${DB_PORT}
-            export HUETAAAAAAA=ZAEBALLSYA
+#            export DB_ENGINE=${DB_ENGINE}
+#            export DB_NAME=${DB_NAME}
+#            export POSTGRES_USER=${POSTGRES_USER}
+#            export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#            export DB_HOST=${DB_HOST}
+#            export DB_PORT=${DB_PORT}
+#            export HUETAAAAAAA=ZAEBALLSYA
             rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
