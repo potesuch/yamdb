@@ -47,25 +47,17 @@ jobs:
     steps:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
-        env:
-            DB_ENGINE: ${{ secrets.DB_ENGINE }}
-            DB_NAME: ${{ secrets.DB_NAME }}
-            POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-            DB_HOST: ${{ secrets.DB_HOST }}
-            DB_PORT: ${{ secrets.DB_PORT }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT
           script: |
-            export DB_ENGINE=$DB_ENGINE
-            export DB_NAME=$DB_NAME
-            export POSTGRES_USER=$POSTGRES_USER
-            export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            export DB_HOST=$DB_HOST
-            export DB_PORT=$DB_PORT
+            export DB_ENGINE=${{ secrets.DB_ENGINE }}
+            export DB_NAME=${{ secrets.DB_NAME }}
+            export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            export DB_HOST=${{ secrets.DB_HOST }}
+            export DB_PORT=${{ secrets.DB_PORT }}
             rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
