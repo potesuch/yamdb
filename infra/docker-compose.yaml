@@ -7,7 +7,7 @@ services:
       - /var/lib/postgresql/data/
     env_file:
       - ./.env
-  web_yamdb:
+  webyamdb:
     image: potesuch/yamdb
     restart: always
     volumes:
@@ -28,7 +28,7 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - web_yamdb
+      - webyamdb
 
 volumes:
   static_value:
