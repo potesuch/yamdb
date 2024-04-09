@@ -52,6 +52,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
             sudo docker compose down
