@@ -54,11 +54,12 @@ jobs:
             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
             DB_HOST: ${{ secrets.DB_HOST }}
             DB_PORT: ${{ secrets.DB_PORT }}
+            HUETAAAAAAA: ZAEBALLSYA
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT
+          envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT, HUETAAAAAAA
           script: |
             env
             rm -rf yamdb/
