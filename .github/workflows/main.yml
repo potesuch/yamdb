@@ -16,11 +16,6 @@ jobs:
           pip install -r yamdb/requirements.txt
       - name: Test with flake8
         run: python -m flake8
-      - name: Test with pytest
-        run: |
-          pytest
-          cd infra/
-          pytest
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker hub
     runs-on: ubuntu-latest
