@@ -31,8 +31,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
-      - HUETAAAAAAA=${HUETAAAAAAA}
-      - HUETAAAAAAA2=NUPIZDECBLYA
 #    env_file:
 #      - ./.env
   nginx:
