@@ -47,10 +47,18 @@ jobs:
     steps:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
+        env:
+            DB_ENGINE: django.db.backends.postgresql
+            DB_NAME: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            DB_HOST: db
+            DB_PORT: 5432
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT
           script: |
             rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
