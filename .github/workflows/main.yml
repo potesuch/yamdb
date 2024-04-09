@@ -1,4 +1,4 @@
-name: CI
+name: yamdb CI
 on: [push]
 jobs:
   tests:
@@ -18,6 +18,7 @@ jobs:
         run: python -m flake8
       - name: Test with pytest
         run: |
+          pytest
           cd infra/
           pytest
   build_and_push_to_docker_hub:
@@ -51,9 +52,10 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo docker pull potesuch/yamdb
+            git clone git@github.com:potesuch/yamdb.git
+            cd yamdb/infra/
             sudo docker compose down
-            sudo docker compose up --build -d    
+            sudo docker compose up --build
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
