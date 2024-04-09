@@ -38,7 +38,7 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: /yamdb
+          context: ./yamdb
           push: true
           tags: potesuch/yamdb
   deploy:
