@@ -5,8 +5,15 @@ services:
     image: postgres:13.0-alpine
     volumes:
       - /var/lib/postgresql/data/
-    env_file:
-      - ./.env
+    environment:
+      - DB_ENGINE=${DB_ENGINE}
+      - DB_NAME=${DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+#    env_file:
+#      - ./.env
   web:
     image: potesuch/yamdb
     restart: always
@@ -17,8 +24,15 @@ services:
      - "8000:8000"
     depends_on:
       - db
-    env_file:
-      - ./.env
+    environment:
+      - DB_ENGINE=${DB_ENGINE}
+      - DB_NAME=${DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+#    env_file:
+#      - ./.env
   nginx:
     image: nginx:1.25.4-alpine
     ports:

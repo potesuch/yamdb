@@ -51,6 +51,13 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          env:
+            DB_ENGINE: django.db.backends.postgresql
+            DB_NAME: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            DB_HOST: db
+            DB_PORT: 5432
           script: |
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
