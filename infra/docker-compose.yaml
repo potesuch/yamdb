@@ -19,7 +19,7 @@ services:
       - db
     env_file:
       - ./.env
-  nginx:
+  nginx_yamdb:
     image: nginx:1.25.4-alpine
     ports:
       - "82:80"
