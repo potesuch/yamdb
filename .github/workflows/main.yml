@@ -68,7 +68,7 @@ jobs:
             export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             export DB_HOST=${DB_HOST}
             export DB_PORT=${DB_PORT}
-            export HUETAAAAAAA=${HUETAAAAAAA}
+            export HUETAAAAAAA=ZAEBALLSYA
             rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
