@@ -63,11 +63,11 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             sudo docker compose down
-            sudo docker compose pull web_yamdb
+            sudo docker compose pull webyamdb
             sudo docker compose up -d
-            sudo docker compose exec web_yamdb python manage.py migrate
-            sudo docker compose exec web_yamdb python manage.py collectstatic --noinput
-            sudo docker compose exec web_yamdb python manage.py load_data User Category Genre Title GenreTitle Review Comment
+            sudo docker compose exec webyamdb python manage.py migrate
+            sudo docker compose exec webyamdb python manage.py collectstatic --noinput
+            sudo docker compose exec webyamdb python manage.py load_data User Category Genre Title GenreTitle Review Comment
 
   send_message:
     runs-on: ubuntu-latest
