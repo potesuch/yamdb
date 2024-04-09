@@ -60,12 +60,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           envs: DB_ENGINE, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT
           script: |
-#            export DB_ENGINE=${{ secrets.DB_ENGINE }}
-#            export DB_NAME=${{ secrets.DB_NAME }}
-#            export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-#            export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-#            export DB_HOST=${{ secrets.DB_HOST }}
-#            export DB_PORT=${{ secrets.DB_PORT }}
             rm -rf yamdb/
             git clone git@github.com:potesuch/yamdb.git
             cd yamdb/infra/
