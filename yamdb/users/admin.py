@@ -7,6 +7,11 @@ from .models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    """
+    Административная панель для управления пользователями.
+
+    Отображает основные атрибуты пользователя и позволяет управлять их правами и группами.
+    """
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),

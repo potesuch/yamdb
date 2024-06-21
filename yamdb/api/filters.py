@@ -3,6 +3,11 @@ from reviews.models import Title
 
 
 class TitleFilter(filters.FilterSet):
+    """
+    Фильтр для произведений.
+
+    Позволяет фильтровать произведения по категории, названию, жанру и году.
+    """
     category = filters.CharFilter(field_name='category__slug')
     name = filters.CharFilter(field_name='name', lookup_expr='icontains')
     genre = filters.CharFilter(field_name='genre__slug')

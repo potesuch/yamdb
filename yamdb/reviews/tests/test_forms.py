@@ -22,7 +22,7 @@ class ReviewFormTest(TestCase):
         Comment.objects.create(review=review, author=cls.author, text='text')
 
     def setUp(self):
-        self.user = User.objects.create(username='user')
+        self.user = User.objects.create(username='user', email='user@user.us')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_client = Client()

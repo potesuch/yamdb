@@ -8,6 +8,11 @@ User = get_user_model()
 
 
 class PubDateModel(models.Model):
+    """
+    Абстрактная модель с датой публикации.
+
+    Добавляет поле даты публикации к модели.
+    """
     pub_date = models.DateTimeField('Дата создания', auto_now_add=True)
 
     class Meta:
@@ -15,6 +20,11 @@ class PubDateModel(models.Model):
 
 
 class Category(models.Model):
+    """
+    Модель для категорий произведений.
+
+    Определяет категорию произведения с уникальным slug и методы для получения URL.
+    """
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
 
@@ -31,6 +41,11 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
+    """
+    Модель для жанров произведений.
+
+    Определяет жанр произведения с уникальным slug и методы для получения URL.
+    """
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
 
@@ -47,6 +62,11 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
+    """
+    Модель для произведений.
+
+    Определяет название, год выпуска, категорию, жанры и описание произведения.
+    """
     name = models.CharField(max_length=100)
     year = models.PositiveSmallIntegerField('Год')
     category = models.ForeignKey(Category, on_delete=models.CASCADE,
@@ -68,6 +88,11 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
+    """
+    Промежуточная модель для связи жанров и произведений.
+
+    Определяет связь между жанром и произведением.
+    """
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
 
@@ -80,6 +105,11 @@ class GenreTitle(models.Model):
 
 
 class Review(PubDateModel):
+    """
+    Модель для отзывов к произведениям.
+
+    Определяет текст отзыва, оценку, автора и произведение, к которому относится отзыв.
+    """
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='reviews')
     title = models.ForeignKey(Title, on_delete=models.CASCADE,
@@ -116,6 +146,11 @@ class Review(PubDateModel):
 
 
 class Comment(PubDateModel):
+    """
+    Модель для комментариев к отзывам.
+
+    Определяет текст комментария, автора и отзыв, к которому относится комментарий.
+    """
     review = models.ForeignKey(Review, on_delete=models.CASCADE,
                                related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE,

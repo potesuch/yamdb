@@ -10,6 +10,11 @@ class GenresInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    """
+    Административная панель для категорий произведений.
+
+    Отображает основные атрибуты категории и позволяет управлять их слагом.
+    """
     list_display = ('name', 'slug')
     list_display_links = ('name',)
     list_editable = ('slug',)
@@ -19,6 +24,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
+    """
+    Административная панель для жанров произведений.
+
+    Отображает основные атрибуты жанра и позволяет управлять их слагом.
+    """
     list_display = ('name', 'slug')
     list_display_links = ('name',)
     list_editable = ('slug',)
@@ -28,6 +38,11 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
+    """
+    Административная панель для произведений.
+
+    Отображает основные атрибуты произведения и позволяет управлять его жанрами.
+    """
     inlines = (GenresInline,)
     list_display = ('name', 'year', 'category', 'get_genres')
     list_display_links = ('name',)
@@ -45,6 +60,11 @@ class TitleAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
+    """
+    Административная панель для отзывов.
+
+    Отображает основные атрибуты отзыва и позволяет управлять его текстом и оценкой.
+    """
     list_display = ('author', 'get_text', 'score', 'title')
     list_display_links = ('get_text',)
     search_fields = ('author', 'get_text', 'title')
@@ -56,6 +76,11 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+    """
+    Административная панель для комментариев.
+
+    Отображает основные атрибуты комментария и позволяет управлять его текстом и связанным отзывом.
+    """
     list_display = ('author', 'get_text', 'get_review_title',
                     'get_review_author')
     list_display_links = ('get_text',)

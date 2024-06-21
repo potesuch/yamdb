@@ -23,7 +23,7 @@ class ReviewViewsTest(TestCase):
                                              author=cls.author, text='text')
 
     def setUp(self):
-        self.user = User.objects.create(username='user')
+        self.user = User.objects.create(username='user', email='user@user.us')
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)

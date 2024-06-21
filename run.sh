@@ -6,4 +6,4 @@ cp -a infta/tests/ /app/infra/tests
 
 cd /app
 pip3 install -r requirements.txt
-pytest --tb=line 1>&2
+pytest

@@ -28,10 +28,27 @@ User = get_user_model()
 
 @extend_schema(tags=['AUTH'])
 class SignUpView(views.APIView):
+    """
+    Представление для регистрации нового пользователя.
+
+    Пользователь может отправить данные для регистрации, включая email и username,
+    и получить на указанный email код подтверждения.
+
+    Права доступа: AllowAny (доступно всем).
+    """
     serializer_class = SignUpSerializer  # Для drf_spectacular
     permission_classes = (AllowAny,)
 
     def send_code(self, user):
+        """
+        Отправка кода подтверждения пользователю.
+
+        Args:
+            user (User): Объект пользователя.
+
+        Returns:
+            None
+        """
         send_mail(
             'Код подтверждения',
             f'{user.username}, ваш код подтверждения {user.confirmation_code}',
@@ -43,6 +60,15 @@ class SignUpView(views.APIView):
                    description='Получить код подтверждения на переданный '
                                '``email``.')
     def post(self, request):
+        """
+        Обработка POST запроса для регистрации нового пользователя.
+
+        Args:
+            request (HttpRequest): HTTP запрос.
+
+        Returns:
+            Response: HTTP ответ с данными о результате регистрации.
+        """
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
             queryset = User.objects.all()
@@ -66,6 +92,14 @@ class SignUpView(views.APIView):
 
 @extend_schema(tags=['AUTH'])
 class TokenObtainRefreshView(views.APIView):
+    """
+    Представление для получения JWT-токена.
+
+    Пользователь может отправить данные (username и confirmation_code),
+    чтобы получить JWT-токен для дальнейшей аутентификации.
+
+    Права доступа: AllowAny (доступно всем).
+    """
     serializer_class = TokenObtainSerializer  # Для drf_spectacular
     permission_classes = (AllowAny,)
 
@@ -73,6 +107,15 @@ class TokenObtainRefreshView(views.APIView):
                    description='Получение JWT-токена в обмен на ``username`` '
                                'и ``confirmation code``.')
     def post(self, request):
+        """
+        Обработка POST запроса для получения JWT-токена.
+
+        Args:
+            request (HttpRequest): HTTP запрос.
+
+        Returns:
+            Response: HTTP ответ с данными о JWT-токене или ошибкой.
+        """
         serializer = TokenObtainSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data.get('username')
@@ -105,6 +148,13 @@ class TokenObtainRefreshView(views.APIView):
                           description='Удалить категорию.')
 )
 class CategoryViewSet(ListCreateDestroyMixin, viewsets.GenericViewSet):
+    """
+    Представление для работы с категориями.
+
+    Пользователь может просматривать, создавать и удалять категории.
+
+    Права доступа: IsAdminOrReadOnly (доступ только для чтения для всех, кроме администраторов).
+    """
     queryset = Category.objects.all()
     lookup_field = 'slug'
     serializer_class = CategorySerializer
@@ -129,6 +179,13 @@ class CategoryViewSet(ListCreateDestroyMixin, viewsets.GenericViewSet):
                           description='Удалить жанр.')
 )
 class GenreViewSet(ListCreateDestroyMixin, viewsets.GenericViewSet):
+    """
+    Представление для работы с жанрами.
+
+    Пользователь может просматривать, создавать и удалять жанры.
+
+    Права доступа: IsAdminOrReadOnly (доступ только для чтения для всех, кроме администраторов).
+    """
     queryset = Genre.objects.all()
     lookup_field = 'slug'
     serializer_class = GenreSerializer
@@ -154,6 +211,13 @@ class GenreViewSet(ListCreateDestroyMixin, viewsets.GenericViewSet):
     update=extend_schema(exclude=True)
 )
 class TitleViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с произведениями.
+
+    Пользователь может просматривать, создавать, обновлять и удалять произведения.
+
+    Права доступа: IsAdminOrReadOnly (доступ только для чтения для всех, кроме администраторов).
+    """
     queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -161,6 +225,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
+        """
+        Получение класса сериализатора для представления в зависимости от действия.
+        """
         if self.action in ('list', 'retrieve'):
             return TitleSerializer
         return TitleCreateUpdateSerializer
@@ -184,16 +251,35 @@ class TitleViewSet(viewsets.ModelViewSet):
     update=extend_schema(exclude=True)
 )
 class ReviewViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с отзывами.
+
+    Пользователь может просматривать, создавать и удалять отзывы.
+
+    Права доступа: IsAuthorOrAdminOrModeratorOrReadOnly (доступ только для чтения для всех, кроме авторов, администраторов и модераторов).
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
 
     def get_queryset(self):
+        """
+        Получение queryset отзывов в зависимости от произведения.
+        """
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
         return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
+        """
+        Создание отзыва с автором.
+
+        Args:
+            serializer (ReviewSerializer): Сериализатор отзыва.
+
+        Returns:
+            None
+        """
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
         serializer.save(title=title, author=self.request.user)
@@ -218,16 +304,35 @@ class ReviewViewSet(viewsets.ModelViewSet):
     update=extend_schema(exclude=True)
 )
 class CommentViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с комментариями к отзывам.
+
+    Пользователь может просматривать, создавать и удалять комментарии к отзывам.
+
+    Права доступа: IsAuthorOrAdminOrModeratorOrReadOnly (доступ только для чтения для всех, кроме авторов, администраторов и модераторов).
+    """
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
 
     def get_queryset(self):
+        """
+        Получение queryset комментариев в зависимости от отзыва.
+        """
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, pk=review_id)
         return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):
+        """
+        Создание комментария с автором и отзывом.
+
+        Args:
+            serializer (CommentSerializer): Сериализатор комментария.
+
+        Returns:
+            None
+        """
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, pk=review_id)
         serializer.save(review=review, author=self.request.user)
@@ -250,6 +355,13 @@ class CommentViewSet(viewsets.ModelViewSet):
 )
 @extend_schema(tags=['USERS'])
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с пользователями.
+
+    Пользователь может просматривать, создавать, обновлять и удалять пользователей.
+
+    Права доступа: IsAdmin (доступ только для администраторов).
+    """
     queryset = User.objects.all()
     lookup_field = 'username'
     serializer_class = UserSerializer
@@ -263,6 +375,11 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,),
             serializer_class=UserMeSerializer)
     def me(self, request):
+        """
+        Получить данные текущего пользователя (себя).
+
+        Разрешено только авторизованным пользователям.
+        """
         serializer = self.get_serializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -270,6 +387,11 @@ class UserViewSet(viewsets.ModelViewSet):
                    description='Изменить данные своей учетной записи')
     @me.mapping.patch
     def me_partial_update(self, request):
+        """
+        Частично изменить данные текущего пользователя (себя).
+
+        Разрешено только авторизованным пользователям.
+        """
         serializer = self.get_serializer(request.user, data=request.data,
                                          partial=True)
         if serializer.is_valid():
