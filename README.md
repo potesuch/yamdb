@@ -37,8 +37,8 @@ API для системы рецензий на произведения: фил
 
 ``` sh
 
-git clone https://github.com/your/repository.git
-cd repository
+git clone https://github.com/potesuch/yamdb.git
+cd yamdb
 ```
 
 2. Установка зависимостей:
